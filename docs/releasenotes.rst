@@ -15,8 +15,9 @@ Release notes
 NEXT RELEASE
 ------------
 
-This release adds support for Python 3.10, drops support for Python
-3.5, 3.6, and 3.7, and updates package dependencies.
+This release adds support for Python 3.10 and 3.11, while dropping
+support for Python 3.5, 3.6, and 3.7. Package dependencies have been
+updated as well.
 
 .. warning::
 
@@ -31,6 +32,7 @@ Resolved issues:
 - **Tasks**:
 
   - `GC-42: Support for Python 3.10 <https://projects.majic.rs/gimmecert/issues/GC-42>`_
+  - `GC-43: Support for Python 3.11 <https://projects.majic.rs/gimmecert/issues/GC-43>`_
   - `GC-45: Drop support for Python 3.5, Python 3.6, and Python 3.7 <https://projects.majic.rs/gimmecert/issues/GC-45>`_
 
 

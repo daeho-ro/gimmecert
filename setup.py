@@ -24,7 +24,7 @@ from setuptools import setup, find_packages
 
 README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 
-python_requirements = ">=3.8,<3.11"
+python_requirements = ">=3.8,<3.12"
 
 install_requirements = [
     'cryptography>=42.0,<42.1',
@@ -91,6 +91,7 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Site Management',
         'Topic :: Security',
