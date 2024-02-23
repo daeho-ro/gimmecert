@@ -52,7 +52,7 @@ sudo -i -u vagrant mkdir -p "$work_directory"
 
 for version in "${python_versions[@]}"; do
     # Set-up information about Python version.
-    minor_version="${version%.[[:digit:]]}"
+    minor_version="${version%.[[:digit:]]*}"
     interpreter="/usr/local/bin/python${minor_version}"
     source_archive_link="https://www.python.org/ftp/python/${version}/Python-${version}.tar.xz"
     source_archive="$work_directory/Python-${version}.tar.xz"
