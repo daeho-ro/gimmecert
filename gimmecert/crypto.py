@@ -89,7 +89,7 @@ class KeyGenerator:
             )
         else:
             private_key = cryptography.hazmat.primitives.asymmetric.ec.generate_private_key(
-                curve=self._parameters
+                curve=self._parameters()
             )
 
         return private_key
