@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2018 Branko Majic
+# Copyright (C) 2024 Branko Majic
 #
 # This file is part of Gimmecert.
 #
@@ -32,7 +32,7 @@ install_requirements = [
 ]
 
 doc_requirements = [
-    'sphinx>=3.3,<3.4',
+    'sphinx>=7.1,<7.2',
 ]
 
 test_lint_requirements = [
