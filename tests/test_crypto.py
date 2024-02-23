@@ -48,11 +48,21 @@ def test_get_validity_range_returns_datetime_tuple():
     assert isinstance(not_after, datetime.datetime)
 
 
+def test_get_validity_range_sets_utc_timezone():
+    not_before, not_after = gimmecert.crypto.get_validity_range()
+
+    assert isinstance(not_before.tzinfo, datetime.timezone)
+    assert not_before.tzinfo == datetime.timezone.utc
+
+    assert isinstance(not_after.tzinfo, datetime.timezone)
+    assert not_after.tzinfo == datetime.timezone.utc
+
+
 @travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False)
 def test_get_validity_range_not_before_is_within_15_minutes_of_now():
     not_before, _ = gimmecert.crypto.get_validity_range()
 
-    assert not_before == datetime.datetime(2018, 1, 1, 0, 0)
+    assert not_before == datetime.datetime(2018, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)
 
 
 @travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False)
@@ -95,8 +105,8 @@ def test_issue_certificate_has_correct_content():
 
     assert certificate.issuer == issuer_dn
     assert certificate.subject == subject_dn
-    assert certificate.not_valid_before == not_before
-    assert certificate.not_valid_after == not_after
+    assert certificate.not_valid_before_utc == not_before
+    assert certificate.not_valid_after_utc == not_after
 
 
 def test_generate_ca_hierarchy_returns_list_with_3_elements_for_depth_3():
@@ -213,8 +223,8 @@ def test_generate_ca_hierarchy_certificates_have_same_validity():
     _, level2_certificate = hierarchy[1]
     _, level3_certificate = hierarchy[2]
 
-    assert level1_certificate.not_valid_before == level2_certificate.not_valid_before == level3_certificate.not_valid_before
-    assert level1_certificate.not_valid_after == level2_certificate.not_valid_after == level3_certificate.not_valid_after
+    assert level1_certificate.not_valid_before_utc == level2_certificate.not_valid_before_utc == level3_certificate.not_valid_before_utc
+    assert level1_certificate.not_valid_after_utc == level2_certificate.not_valid_after_utc == level3_certificate.not_valid_after_utc
 
 
 def test_issue_certificate_sets_extensions():
@@ -361,7 +371,7 @@ def test_issue_server_certificate_not_before_is_15_minutes_in_past():
 
     certificate = gimmecert.crypto.issue_server_certificate('myserver', private_key.public_key(), issuer_private_key, issuer_certificate)
 
-    assert certificate.not_valid_before == datetime.datetime(2018, 1, 1, 0, 0)
+    assert certificate.not_valid_before_utc == datetime.datetime(2018, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)
 
 
 def test_issue_server_certificate_not_before_does_not_exceed_ca_validity():
@@ -372,10 +382,10 @@ def test_issue_server_certificate_not_before_does_not_exceed_ca_validity():
 
     private_key = gimmecert.crypto.KeyGenerator('rsa', 2048)()
 
-    with travel(issuer_certificate.not_valid_before - datetime.timedelta(seconds=1), tick=False):
+    with travel(issuer_certificate.not_valid_before_utc - datetime.timedelta(seconds=1), tick=False):
         certificate1 = gimmecert.crypto.issue_server_certificate('myserver', private_key.public_key(), issuer_private_key, issuer_certificate)
 
-    assert certificate1.not_valid_before == issuer_certificate.not_valid_before
+    assert certificate1.not_valid_before_utc == issuer_certificate.not_valid_before_utc
 
 
 def test_issue_server_certificate_not_after_does_not_exceed_ca_validity():
@@ -386,10 +396,10 @@ def test_issue_server_certificate_not_after_does_not_exceed_ca_validity():
 
     private_key = gimmecert.crypto.KeyGenerator('rsa', 2048)()
 
-    with travel(issuer_certificate.not_valid_after + datetime.timedelta(seconds=1), tick=False):
+    with travel(issuer_certificate.not_valid_after_utc + datetime.timedelta(seconds=1), tick=False):
         certificate1 = gimmecert.crypto.issue_server_certificate('myserver', private_key.public_key(), issuer_private_key, issuer_certificate)
 
-    assert certificate1.not_valid_after == issuer_certificate.not_valid_after
+    assert certificate1.not_valid_after_utc == issuer_certificate.not_valid_after_utc
 
 
 def test_issue_server_certificate_incorporates_additional_dns_subject_alternative_names():
@@ -497,7 +507,7 @@ def test_issue_client_certificate_not_before_is_15_minutes_in_past():
 
     certificate = gimmecert.crypto.issue_client_certificate('myclient', private_key.public_key(), issuer_private_key, issuer_certificate)
 
-    assert certificate.not_valid_before == datetime.datetime(2018, 1, 1, 0, 0)
+    assert certificate.not_valid_before_utc == datetime.datetime(2018, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)
 
 
 def test_issue_client_certificate_not_before_does_not_exceed_ca_validity():
@@ -508,10 +518,10 @@ def test_issue_client_certificate_not_before_does_not_exceed_ca_validity():
 
     private_key = gimmecert.crypto.KeyGenerator('rsa', 2048)()
 
-    with travel(issuer_certificate.not_valid_before - datetime.timedelta(seconds=1), tick=False):
+    with travel(issuer_certificate.not_valid_before_utc - datetime.timedelta(seconds=1), tick=False):
         certificate1 = gimmecert.crypto.issue_client_certificate('myclient', private_key.public_key(), issuer_private_key, issuer_certificate)
 
-    assert certificate1.not_valid_before == issuer_certificate.not_valid_before
+    assert certificate1.not_valid_before_utc == issuer_certificate.not_valid_before_utc
 
 
 def test_issue_client_certificate_not_after_does_not_exceed_ca_validity():
@@ -522,10 +532,10 @@ def test_issue_client_certificate_not_after_does_not_exceed_ca_validity():
 
     private_key = gimmecert.crypto.KeyGenerator('rsa', 2048)()
 
-    with travel(issuer_certificate.not_valid_after + datetime.timedelta(seconds=1), tick=False):
+    with travel(issuer_certificate.not_valid_after_utc + datetime.timedelta(seconds=1), tick=False):
         certificate1 = gimmecert.crypto.issue_client_certificate('myclient', private_key.public_key(), issuer_private_key, issuer_certificate)
 
-    assert certificate1.not_valid_after == issuer_certificate.not_valid_after
+    assert certificate1.not_valid_after_utc == issuer_certificate.not_valid_after_utc
 
 
 def test_renew_certificate_returns_certificate():
@@ -575,7 +585,7 @@ def test_renew_certificate_not_before_is_15_minutes_in_past():
     with travel(datetime.datetime(2018, 6, 1, 0, 15, 0), tick=False):
         certificate = gimmecert.crypto.renew_certificate(old_certificate, private_key.public_key(), issuer_private_key, issuer_certificate)
 
-    assert certificate.not_valid_before == datetime.datetime(2018, 6, 1, 0, 0)
+    assert certificate.not_valid_before_utc == datetime.datetime(2018, 6, 1, 0, 0, tzinfo=datetime.timezone.utc)
 
 
 def test_renew_certificate_not_before_does_not_exceed_ca_validity():
@@ -589,10 +599,10 @@ def test_renew_certificate_not_before_does_not_exceed_ca_validity():
         old_certificate = gimmecert.crypto.issue_server_certificate('myserver', private_key.public_key(), issuer_private_key, issuer_certificate)
 
     # Renew certificate.
-    with travel(issuer_certificate.not_valid_before - datetime.timedelta(seconds=1), tick=False):
+    with travel(issuer_certificate.not_valid_before_utc - datetime.timedelta(seconds=1), tick=False):
         certificate = gimmecert.crypto.renew_certificate(old_certificate, private_key.public_key(), issuer_private_key, issuer_certificate)
 
-    assert certificate.not_valid_before == issuer_certificate.not_valid_before
+    assert certificate.not_valid_before_utc == issuer_certificate.not_valid_before_utc
 
 
 def test_renew_certificate_not_after_does_not_exceed_ca_validity():
@@ -606,10 +616,10 @@ def test_renew_certificate_not_after_does_not_exceed_ca_validity():
         old_certificate = gimmecert.crypto.issue_server_certificate('myserver', private_key.public_key(), issuer_private_key, issuer_certificate)
 
     # Renew certificate.
-    with travel(issuer_certificate.not_valid_after + datetime.timedelta(seconds=1), tick=False):
+    with travel(issuer_certificate.not_valid_after_utc + datetime.timedelta(seconds=1), tick=False):
         certificate = gimmecert.crypto.renew_certificate(old_certificate, private_key.public_key(), issuer_private_key, issuer_certificate)
 
-    assert certificate.not_valid_after == issuer_certificate.not_valid_after
+    assert certificate.not_valid_after_utc == issuer_certificate.not_valid_after_utc
 
 
 def test_generate_csr_returns_csr_with_passed_in_dn():

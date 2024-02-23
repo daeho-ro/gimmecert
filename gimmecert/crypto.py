@@ -127,7 +127,7 @@ def get_validity_range():
     :rtype: (datetime.datetime, datetime.datetime)
     """
 
-    now = datetime.datetime.utcnow().replace(microsecond=0)
+    now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
     not_before = now - datetime.timedelta(minutes=15)
     not_after = now + relativedelta(years=1)
 
@@ -293,11 +293,11 @@ def issue_server_certificate(name, public_key, issuer_private_key, issuer_certif
         (cryptography.x509.SubjectAlternativeName([cryptography.x509.DNSName(dns_name) for dns_name in dns_names]), False)
     ]
 
-    if not_before < issuer_certificate.not_valid_before:
-        not_before = issuer_certificate.not_valid_before
+    if not_before < issuer_certificate.not_valid_before_utc:
+        not_before = issuer_certificate.not_valid_before_utc
 
-    if not_after > issuer_certificate.not_valid_after:
-        not_after = issuer_certificate.not_valid_after
+    if not_after > issuer_certificate.not_valid_after_utc:
+        not_after = issuer_certificate.not_valid_after_utc
 
     certificate = issue_certificate(issuer_certificate.subject, dn, issuer_private_key, public_key, not_before, not_after, extensions)
 
@@ -353,11 +353,11 @@ def issue_client_certificate(name, public_key, issuer_private_key, issuer_certif
         (cryptography.x509.ExtendedKeyUsage([cryptography.x509.oid.ExtendedKeyUsageOID.CLIENT_AUTH]), True),
     ]
 
-    if not_before < issuer_certificate.not_valid_before:
-        not_before = issuer_certificate.not_valid_before
+    if not_before < issuer_certificate.not_valid_before_utc:
+        not_before = issuer_certificate.not_valid_before_utc
 
-    if not_after > issuer_certificate.not_valid_after:
-        not_after = issuer_certificate.not_valid_after
+    if not_after > issuer_certificate.not_valid_after_utc:
+        not_after = issuer_certificate.not_valid_after_utc
 
     certificate = issue_certificate(issuer_certificate.subject, dn, issuer_private_key, public_key, not_before, not_after, extensions)
 
@@ -389,11 +389,11 @@ def renew_certificate(old_certificate, public_key, issuer_private_key, issuer_ce
 
     not_before, not_after = get_validity_range()
 
-    if not_before < issuer_certificate.not_valid_before:
-        not_before = issuer_certificate.not_valid_before
+    if not_before < issuer_certificate.not_valid_before_utc:
+        not_before = issuer_certificate.not_valid_before_utc
 
-    if not_after > issuer_certificate.not_valid_after:
-        not_after = issuer_certificate.not_valid_after
+    if not_after > issuer_certificate.not_valid_after_utc:
+        not_after = issuer_certificate.not_valid_after_utc
 
     new_certificate = issue_certificate(issuer_certificate.subject,
                                         old_certificate.subject,
