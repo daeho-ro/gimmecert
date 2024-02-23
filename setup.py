@@ -36,23 +36,19 @@ doc_requirements = [
 ]
 
 test_lint_requirements = [
-    'flake8>=3.8,<3.9',
+    'flake8>=7.0,<7.1',
 ]
 
 test_requirements = [
-    'freezegun>=1.0,<1.1',
-    'pytest>=6.1,<6.2',
-    'pytest-cov>=2.10,<2.11',
-    'tox>=3.20,<3.21',
-    'pexpect>=4.8,<4.9',
+    'freezegun>=1.3,<1.4',
+    'pytest>=8.0,<8.1',
+    'pytest-cov>=4.1,<4.2',
+    'tox>=4.13,<4.14',
+    'pexpect>=4.9,<4.10',
 ]
 
 release_requirements = [
     'twine',
-]
-
-setup_requirements = [
-    'pytest-runner>=5.2,<5.3',
 ]
 
 development_requirements = doc_requirements + test_requirements + test_lint_requirements + release_requirements
@@ -80,7 +76,6 @@ setup(
     author_email='branko@majic.rs',
     python_requires=python_requirements,
     install_requires=install_requirements,
-    setup_requires=setup_requirements,
     tests_require=test_requirements,
     extras_require=extras_requirements,
     entry_points={

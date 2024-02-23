@@ -70,13 +70,8 @@ functional tests (within ``functional_tests/`` directory).
 Tests can be run in a number of different ways, depending on what you
 want to test and how.
 
-To run the unit tests via setup script, run the following command from
-repository root::
-
-  python setup.py test
-
-To run the unit tests directly, run the following command from
-repository root::
+To run the unit tests, run the following command from repository
+root::
 
   pytest
 
@@ -125,16 +120,16 @@ Tests can also be run using `tox <https://tox.readthedocs.io/>`_:
 ::
 
   # Run full suite of tests on all supported Python versions.
-  tox
+  tox run
 
   # List available tox environments.
-  tox -l
+  tox list
 
   # Run tests against specific Python version.
-  tox -e py38
+  tox run -e py38
 
   # Run documentation and linting tests only.
-  tox -e doc,lint
+  tox run -e doc,lint
 
 
 Running tests on all supproted Python versions
@@ -180,7 +175,7 @@ perform the following steps:
 
 ::
 
-     tox --workdir /tmp/
+     tox run --workdir /tmp/
 
 
 Building documentation
