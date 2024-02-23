@@ -151,7 +151,7 @@ def test_initialisation_with_rsa_private_key_specification(tmpdir):
 
     assert exit_code == 0
     assert stderr == ""
-    assert "Private-Key: (4096 bit)" in stdout
+    assert "Private-Key: (4096 bit, 2 primes)" in stdout
 
     # John also does a quick check on the generated certificate's
     # signing and public key algorithm.
@@ -188,7 +188,7 @@ def test_server_command_default_key_specification_with_rsa(tmpdir):
 
     # He can see that the generated private key uses the same size as the
     # one he specified for the CA hierarchy.
-    assert "Private-Key: (1024 bit)" in stdout
+    assert "Private-Key: (1024 bit, 2 primes)" in stdout
 
 
 def test_server_command_key_specification_with_rsa(tmpdir):
@@ -212,7 +212,7 @@ def test_server_command_key_specification_with_rsa(tmpdir):
 
     # He nods with his head, observing that the generated private key
     # uses the same key size as he has requested.
-    assert "Private-Key: (2048 bit)" in stdout
+    assert "Private-Key: (2048 bit, 2 primes)" in stdout
 
 
 def test_client_command_default_key_specification_with_rsa(tmpdir):
@@ -240,7 +240,7 @@ def test_client_command_default_key_specification_with_rsa(tmpdir):
 
     # He can see that the generated private key uses the same size as the
     # one he specified for the CA hierarchy.
-    assert "Private-Key: (1024 bit)" in stdout
+    assert "Private-Key: (1024 bit, 2 primes)" in stdout
 
 
 def test_client_command_key_specification_with_rsa(tmpdir):
@@ -264,7 +264,7 @@ def test_client_command_key_specification_with_rsa(tmpdir):
 
     # He nods with his head, observing that the generated private key
     # uses the same key size as he has specified.
-    assert "Private-Key: (2048 bit)" in stdout
+    assert "Private-Key: (2048 bit, 2 primes)" in stdout
 
 
 def test_renew_command_key_specification_with_rsa(tmpdir):
@@ -300,7 +300,7 @@ def test_renew_command_key_specification_with_rsa(tmpdir):
     # disovers that Gimmecert generated the key according to his
     # wishes.
     stdout, _, _ = run_command('openssl', 'rsa', '-noout', '-text', '-in', '.gimmecert/server/myserver1.key.pem')
-    assert "Private-Key: (1024 bit)" in stdout
+    assert "Private-Key: (1024 bit, 2 primes)" in stdout
 
     # John goes ahead and performs a similar operation for his client
     # entity.
@@ -310,7 +310,7 @@ def test_renew_command_key_specification_with_rsa(tmpdir):
 
     # And once again, Gimmecert has created the key with correct size.
     stdout, _, _ = run_command('openssl', 'rsa', '-noout', '-text', '-in', '.gimmecert/client/myclient1.key.pem')
-    assert "Private-Key: (1024 bit)" in stdout
+    assert "Private-Key: (1024 bit, 2 primes)" in stdout
 
     # After some further testing, John decides to renew the
     # certificates that have been issued using a CSR. He requests new
@@ -329,14 +329,14 @@ def test_renew_command_key_specification_with_rsa(tmpdir):
 
     # The renew command has used the same key specification for the
     # new private key as for the old private key.
-    assert "Private-Key: (1024 bit)" in stdout
+    assert "Private-Key: (1024 bit, 2 primes)" in stdout
 
     # He performs the same check on the client key.
     stdout, _, _ = run_command('openssl', 'rsa', '-noout', '-text', '-in', '.gimmecert/client/myclient1.key.pem')
 
     # The renew command has used the same key specification for the
     # new private key as for the old private key.
-    assert "Private-Key: (1024 bit)" in stdout
+    assert "Private-Key: (1024 bit, 2 primes)" in stdout
 
     # After using his manually generated private keys for a while,
     # John accidentally deletes them from his managed machine. Instead
@@ -354,12 +354,12 @@ def test_renew_command_key_specification_with_rsa(tmpdir):
     # He checks the server private key, and everything seems right -
     # same key size is used as in case of the old private key.
     stdout, stderr, _ = run_command('openssl', 'rsa', '-noout', '-text', '-in', '.gimmecert/server/myserver2.key.pem')
-    assert "Private-Key: (3072 bit)" in stdout
+    assert "Private-Key: (3072 bit, 2 primes)" in stdout
 
     # Then he has a look at the client private key, and that one is
     # also using the same key size as the old private key.
     stdout, _, _ = run_command('openssl', 'rsa', '-noout', '-text', '-in', '.gimmecert/client/myclient2.key.pem')
-    assert "Private-Key: (3072 bit)" in stdout
+    assert "Private-Key: (3072 bit, 2 primes)" in stdout
 
 
 def test_initialisation_with_ecdsa_key_specification(tmpdir):

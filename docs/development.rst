@@ -28,7 +28,7 @@ tailored for a GNU/Linux system.
 Before proceeding, ensure you have the following system-wide packages
 installed:
 
-- `Python, version 3.5+ <https://www.python.org/>`_.
+- `Python, version 3.8+ <https://www.python.org/>`_.
 - `virtualenvwrapper <https://virtualenvwrapper.readthedocs.io/>`_.
 
 With those in place, do the following:
@@ -131,7 +131,7 @@ Tests can also be run using `tox <https://tox.readthedocs.io/>`_:
   tox -l
 
   # Run tests against specific Python version.
-  tox -e py35
+  tox -e py38
 
   # Run documentation and linting tests only.
   tox -e doc,lint

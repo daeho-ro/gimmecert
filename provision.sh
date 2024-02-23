@@ -21,13 +21,13 @@ apt-get update -qq
 apt-get install -qq -y git virtualenv
 
 # Install Python build dependencies.
-apt-get install -qq -y make build-essential libssl1.0-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libffi-dev
+apt-get install -qq -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libffi-dev
 
 # Import public keys for validating Python releases.
 sudo -i -u vagrant gpg -q --import /vagrant/provision/python_releases_signing_keys.pub
 
 # Download and build additional Python versions.
-python_versions=("3.5.10" "3.6.12" "3.7.9" "3.8.6" "3.9.0")
+python_versions=("3.8.18" "3.9.18")
 work_directory="/home/vagrant/src"
 
 echo "Setting-up work directory."

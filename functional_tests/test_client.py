@@ -88,7 +88,7 @@ def test_client_command_issues_client_certificate(tmpdir):
     # about the generated key.
     assert exit_code == 0
     assert stderr == ""
-    assert "Private-Key: (2048 bit)" in stdout
+    assert "Private-Key: (2048 bit, 2 primes)" in stdout
 
     # John then has a look at the generated certificate file.
     stdout, stderr, exit_code = run_command('openssl', 'x509', '-noout', '-text', '-in', '.gimmecert/client/myclient.cert.pem')

@@ -5,6 +5,20 @@ Release notes
 NEXT RELEASE
 ------------
 
+.. warning::
+
+   This release contains the following breaking changes:
+
+   - Support for Python 3.5, 3.6, and 3.7 has been dropped. Make sure
+     that you are using one of the supported Python versions prior to
+     upgrading *Gimmecert*.
+
+Resolves issues:
+
+- **Tasks**:
+
+  - `GC-45: Drop support for Python 3.5, Python 3.6, and Python 3.7 <https://projects.majic.rs/gimmecert/issues/GC-45>`_
+
 
 0.5.0
 -----

@@ -73,7 +73,7 @@ def test_initialisation_on_fresh_directory(tmpdir):
     # about the generated key.
     assert exit_code == 0
     assert stderr == ""
-    assert "Private-Key: (2048 bit)" in stdout
+    assert "Private-Key: (2048 bit, 2 primes)" in stdout
 
     # John then has a look at the generated certificate file.
     stdout, stderr, exit_code = run_command('openssl', 'x509', '-noout', '-text', '-in', '.gimmecert/ca/level1.cert.pem')
@@ -209,15 +209,15 @@ def test_initialisation_with_custom_hierarchy_depth(tmpdir):
 
     assert exit_code1 == 0
     assert stderr1 == ""
-    assert "Private-Key: (2048 bit)" in stdout1
+    assert "Private-Key: (2048 bit, 2 primes)" in stdout1
 
     assert exit_code2 == 0
     assert stderr2 == ""
-    assert "Private-Key: (2048 bit)" in stdout2
+    assert "Private-Key: (2048 bit, 2 primes)" in stdout2
 
     assert exit_code3 == 0
     assert stderr3 == ""
-    assert "Private-Key: (2048 bit)" in stdout3
+    assert "Private-Key: (2048 bit, 2 primes)" in stdout3
 
     # John then has a look at the generated CA certificate files.
     stdout1, stderr1, exit_code1 = run_command('openssl', 'x509', '-noout', '-text', '-in', '.gimmecert/ca/level1.cert.pem')
