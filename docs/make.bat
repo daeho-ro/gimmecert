@@ -1,5 +1,5 @@
 REM
-REM Copyright (C) 2018 Branko Majic
+REM Copyright (C) 2018, 2020, 2024 Branko Majic
 REM
 REM This file is part of Gimmecert documentation.
 REM

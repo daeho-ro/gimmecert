@@ -2,7 +2,7 @@
 #
 # release.sh
 #
-# Copyright (C) 2018, Branko Majic <branko@majic.rs>
+# Copyright (C) 2018, 2020, 2024 Branko Majic <branko@majic.rs>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2024 Branko Majic
+# Copyright (C) 2018, 2020, 2024 Branko Majic
 #
 # This file is part of Gimmecert documentation.
 #
