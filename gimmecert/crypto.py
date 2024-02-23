@@ -85,13 +85,11 @@ class KeyGenerator:
 
             private_key = cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key(
                 public_exponent=rsa_public_exponent,
-                key_size=self._parameters,
-                backend=cryptography.hazmat.backends.default_backend()
+                key_size=self._parameters
             )
         else:
             private_key = cryptography.hazmat.primitives.asymmetric.ec.generate_private_key(
-                curve=self._parameters,
-                backend=cryptography.hazmat.backends.default_backend()
+                curve=self._parameters
             )
 
         return private_key
@@ -183,8 +181,7 @@ def issue_certificate(issuer_dn, subject_dn, signing_key, public_key, not_before
 
     certificate = builder.sign(
         private_key=signing_key,
-        algorithm=cryptography.hazmat.primitives.hashes.SHA256(),
-        backend=cryptography.hazmat.backends.default_backend()
+        algorithm=cryptography.hazmat.primitives.hashes.SHA256()
     )
 
     return certificate
@@ -434,8 +431,7 @@ def generate_csr(name, private_key):
 
     csr = builder.sign(
         private_key,
-        cryptography.hazmat.primitives.hashes.SHA256(),
-        cryptography.hazmat.backends.default_backend()
+        cryptography.hazmat.primitives.hashes.SHA256()
     )
 
     return csr

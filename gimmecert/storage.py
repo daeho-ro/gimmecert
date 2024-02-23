@@ -171,8 +171,7 @@ def read_private_key(private_key_path):
     with open(private_key_path, 'rb') as private_key_file:
         private_key = cryptography.hazmat.primitives.serialization.load_pem_private_key(
             private_key_file.read(),
-            None,  # no password
-            cryptography.hazmat.backends.default_backend()
+            None  # no password
         )
 
     return private_key
@@ -192,8 +191,7 @@ def read_certificate(certificate_path):
     """
     with open(certificate_path, 'rb') as certificate_file:
         certificate = cryptography.x509.load_pem_x509_certificate(
-            certificate_file.read(),
-            cryptography.hazmat.backends.default_backend()
+            certificate_file.read()
         )
 
     return certificate
@@ -232,8 +230,7 @@ def read_csr(csr_path):
 
     with open(csr_path, 'rb') as csr_file:
         csr = cryptography.x509.load_pem_x509_csr(
-            csr_file.read(),
-            cryptography.hazmat.backends.default_backend()
+            csr_file.read()
         )
 
     return csr

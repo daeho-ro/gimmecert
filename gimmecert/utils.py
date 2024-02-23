@@ -156,8 +156,7 @@ def csr_from_pem(csr_pem):
     """
 
     csr = cryptography.x509.load_pem_x509_csr(
-        bytes(csr_pem, encoding='utf8'),
-        cryptography.hazmat.backends.default_backend()
+        bytes(csr_pem, encoding='utf8')
     )
 
     return csr

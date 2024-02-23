@@ -23,7 +23,6 @@ import datetime
 import io
 
 import cryptography.x509
-import cryptography.hazmat.backends
 
 import gimmecert.crypto
 import gimmecert.utils
@@ -40,8 +39,7 @@ def test_certificate_to_pem_returns_valid_pem():
     certificate_pem = gimmecert.utils.certificate_to_pem(certificate)
 
     assert isinstance(certificate_pem, str)
-    certificate_from_pem = cryptography.x509.load_pem_x509_certificate(bytes(certificate_pem, encoding='UTF-8'),
-                                                                       cryptography.hazmat.backends.default_backend())  # Should not throw
+    certificate_from_pem = cryptography.x509.load_pem_x509_certificate(bytes(certificate_pem, encoding='UTF-8'))  # Should not throw
     assert certificate_from_pem.subject == certificate.subject
     assert certificate_from_pem.issuer == certificate.issuer
 
