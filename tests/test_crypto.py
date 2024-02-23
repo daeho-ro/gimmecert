@@ -29,7 +29,7 @@ from dateutil.relativedelta import relativedelta
 import gimmecert.crypto
 
 import pytest
-from freezegun import freeze_time
+from time_machine import travel
 
 
 def test_get_dn():
@@ -48,14 +48,14 @@ def test_get_validity_range_returns_datetime_tuple():
     assert isinstance(not_after, datetime.datetime)
 
 
-@freeze_time('2018-01-01 00:15:00')
+@travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False)
 def test_get_validity_range_not_before_is_within_15_minutes_of_now():
     not_before, _ = gimmecert.crypto.get_validity_range()
 
     assert not_before == datetime.datetime(2018, 1, 1, 0, 0)
 
 
-@freeze_time('2018-01-01 00:15:00')
+@travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False)
 def test_get_validity_range_is_one_year_and_15_minutes():
     not_before, not_after = gimmecert.crypto.get_validity_range()
     difference = relativedelta(not_after, not_before)
@@ -63,7 +63,7 @@ def test_get_validity_range_is_one_year_and_15_minutes():
     assert difference == relativedelta(years=1, minutes=15)
 
 
-@freeze_time('2018-01-01 00:15:00.100')
+@travel(datetime.datetime(2018, 1, 1, 0, 15, 0, 100), tick=False)
 def test_get_validity_range_drops_microseconds():
     not_before, not_after = gimmecert.crypto.get_validity_range()
 
@@ -352,7 +352,7 @@ def test_issue_server_certificate_has_correct_public_key(key_specification):
     assert certificate.public_key().public_numbers() == private_key.public_key().public_numbers()
 
 
-@freeze_time('2018-01-01 00:15:00')
+@travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False)
 def test_issue_server_certificate_not_before_is_15_minutes_in_past():
     ca_hierarchy = gimmecert.crypto.generate_ca_hierarchy('My Project', 1, gimmecert.crypto.KeyGenerator("rsa", 2048))
     issuer_private_key, issuer_certificate = ca_hierarchy[0]
@@ -365,28 +365,28 @@ def test_issue_server_certificate_not_before_is_15_minutes_in_past():
 
 
 def test_issue_server_certificate_not_before_does_not_exceed_ca_validity():
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         ca_hierarchy = gimmecert.crypto.generate_ca_hierarchy('My Project', 1, gimmecert.crypto.KeyGenerator("rsa", 2048))
 
     issuer_private_key, issuer_certificate = ca_hierarchy[0]
 
     private_key = gimmecert.crypto.KeyGenerator('rsa', 2048)()
 
-    with freeze_time(issuer_certificate.not_valid_before - datetime.timedelta(seconds=1)):
+    with travel(issuer_certificate.not_valid_before - datetime.timedelta(seconds=1), tick=False):
         certificate1 = gimmecert.crypto.issue_server_certificate('myserver', private_key.public_key(), issuer_private_key, issuer_certificate)
 
     assert certificate1.not_valid_before == issuer_certificate.not_valid_before
 
 
 def test_issue_server_certificate_not_after_does_not_exceed_ca_validity():
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         ca_hierarchy = gimmecert.crypto.generate_ca_hierarchy('My Project', 1, gimmecert.crypto.KeyGenerator("rsa", 2048))
 
     issuer_private_key, issuer_certificate = ca_hierarchy[0]
 
     private_key = gimmecert.crypto.KeyGenerator('rsa', 2048)()
 
-    with freeze_time(issuer_certificate.not_valid_after + datetime.timedelta(seconds=1)):
+    with travel(issuer_certificate.not_valid_after + datetime.timedelta(seconds=1), tick=False):
         certificate1 = gimmecert.crypto.issue_server_certificate('myserver', private_key.public_key(), issuer_private_key, issuer_certificate)
 
     assert certificate1.not_valid_after == issuer_certificate.not_valid_after
@@ -488,7 +488,7 @@ def test_issue_client_certificate_has_correct_public_key(key_specification):
     assert certificate.public_key().public_numbers() == private_key.public_key().public_numbers()
 
 
-@freeze_time('2018-01-01 00:15:00')
+@travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False)
 def test_issue_client_certificate_not_before_is_15_minutes_in_past():
     ca_hierarchy = gimmecert.crypto.generate_ca_hierarchy('My Project', 1, gimmecert.crypto.KeyGenerator("rsa", 2048))
     issuer_private_key, issuer_certificate = ca_hierarchy[0]
@@ -501,28 +501,28 @@ def test_issue_client_certificate_not_before_is_15_minutes_in_past():
 
 
 def test_issue_client_certificate_not_before_does_not_exceed_ca_validity():
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         ca_hierarchy = gimmecert.crypto.generate_ca_hierarchy('My Project', 1, gimmecert.crypto.KeyGenerator("rsa", 2048))
 
     issuer_private_key, issuer_certificate = ca_hierarchy[0]
 
     private_key = gimmecert.crypto.KeyGenerator('rsa', 2048)()
 
-    with freeze_time(issuer_certificate.not_valid_before - datetime.timedelta(seconds=1)):
+    with travel(issuer_certificate.not_valid_before - datetime.timedelta(seconds=1), tick=False):
         certificate1 = gimmecert.crypto.issue_client_certificate('myclient', private_key.public_key(), issuer_private_key, issuer_certificate)
 
     assert certificate1.not_valid_before == issuer_certificate.not_valid_before
 
 
 def test_issue_client_certificate_not_after_does_not_exceed_ca_validity():
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         ca_hierarchy = gimmecert.crypto.generate_ca_hierarchy('My Project', 1, gimmecert.crypto.KeyGenerator("rsa", 2048))
 
     issuer_private_key, issuer_certificate = ca_hierarchy[0]
 
     private_key = gimmecert.crypto.KeyGenerator('rsa', 2048)()
 
-    with freeze_time(issuer_certificate.not_valid_after + datetime.timedelta(seconds=1)):
+    with travel(issuer_certificate.not_valid_after + datetime.timedelta(seconds=1), tick=False):
         certificate1 = gimmecert.crypto.issue_client_certificate('myclient', private_key.public_key(), issuer_private_key, issuer_certificate)
 
     assert certificate1.not_valid_after == issuer_certificate.not_valid_after
@@ -564,7 +564,7 @@ def test_renew_certificate_has_correct_content(key_specification):
 def test_renew_certificate_not_before_is_15_minutes_in_past():
 
     # Initial server certificate.
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         ca_hierarchy = gimmecert.crypto.generate_ca_hierarchy('My Project', 1, gimmecert.crypto.KeyGenerator("rsa", 2048))
         issuer_private_key, issuer_certificate = ca_hierarchy[0]
 
@@ -572,7 +572,7 @@ def test_renew_certificate_not_before_is_15_minutes_in_past():
         old_certificate = gimmecert.crypto.issue_server_certificate('myserver', private_key.public_key(), issuer_private_key, issuer_certificate)
 
     # Renew certificate.
-    with freeze_time('2018-06-01 00:15:00'):
+    with travel(datetime.datetime(2018, 6, 1, 0, 15, 0), tick=False):
         certificate = gimmecert.crypto.renew_certificate(old_certificate, private_key.public_key(), issuer_private_key, issuer_certificate)
 
     assert certificate.not_valid_before == datetime.datetime(2018, 6, 1, 0, 0)
@@ -581,7 +581,7 @@ def test_renew_certificate_not_before_is_15_minutes_in_past():
 def test_renew_certificate_not_before_does_not_exceed_ca_validity():
 
     # Initial server certificate.
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         ca_hierarchy = gimmecert.crypto.generate_ca_hierarchy('My Project', 1, gimmecert.crypto.KeyGenerator("rsa", 2048))
         issuer_private_key, issuer_certificate = ca_hierarchy[0]
 
@@ -589,7 +589,7 @@ def test_renew_certificate_not_before_does_not_exceed_ca_validity():
         old_certificate = gimmecert.crypto.issue_server_certificate('myserver', private_key.public_key(), issuer_private_key, issuer_certificate)
 
     # Renew certificate.
-    with freeze_time(issuer_certificate.not_valid_before - datetime.timedelta(seconds=1)):
+    with travel(issuer_certificate.not_valid_before - datetime.timedelta(seconds=1), tick=False):
         certificate = gimmecert.crypto.renew_certificate(old_certificate, private_key.public_key(), issuer_private_key, issuer_certificate)
 
     assert certificate.not_valid_before == issuer_certificate.not_valid_before
@@ -598,7 +598,7 @@ def test_renew_certificate_not_before_does_not_exceed_ca_validity():
 def test_renew_certificate_not_after_does_not_exceed_ca_validity():
 
     # Initial server certificate.
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         ca_hierarchy = gimmecert.crypto.generate_ca_hierarchy('My Project', 1, gimmecert.crypto.KeyGenerator("rsa", 2048))
         issuer_private_key, issuer_certificate = ca_hierarchy[0]
 
@@ -606,7 +606,7 @@ def test_renew_certificate_not_after_does_not_exceed_ca_validity():
         old_certificate = gimmecert.crypto.issue_server_certificate('myserver', private_key.public_key(), issuer_private_key, issuer_certificate)
 
     # Renew certificate.
-    with freeze_time(issuer_certificate.not_valid_after + datetime.timedelta(seconds=1)):
+    with travel(issuer_certificate.not_valid_after + datetime.timedelta(seconds=1), tick=False):
         certificate = gimmecert.crypto.renew_certificate(old_certificate, private_key.public_key(), issuer_private_key, issuer_certificate)
 
     assert certificate.not_valid_after == issuer_certificate.not_valid_after

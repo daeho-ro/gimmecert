@@ -19,6 +19,7 @@
 #
 
 import argparse
+import datetime
 import io
 import os
 import sys
@@ -31,7 +32,7 @@ import gimmecert.crypto
 
 import pytest
 from unittest import mock
-from freezegun import freeze_time
+from time_machine import travel
 
 
 def test_init_sets_up_directory_structure(tmpdir):
@@ -646,10 +647,10 @@ def test_status_reports_ca_hierarchy_information(tmpdir, ca_key_specification, c
     stdout_stream = io.StringIO()
     stderr_stream = io.StringIO()
 
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         gimmecert.commands.init(io.StringIO(), io.StringIO(), tmpdir.strpath, tmpdir.basename, 3, ca_key_specification)
 
-    with freeze_time('2018-06-01 00:15:00'):
+    with travel(datetime.datetime(2018, 6, 1, 0, 15, 0), tick=False):
         status_code = gimmecert.commands.status(stdout_stream, stderr_stream, tmpdir.strpath)
 
     stdout = stdout_stream.getvalue()
@@ -696,22 +697,22 @@ def test_status_reports_server_certificate_information(tmpdir):
     myserver3_csr = gimmecert.crypto.generate_csr('blah', myserver3_private_key)
     gimmecert.storage.write_csr(myserver3_csr, myserver3_csr_file.strpath)
 
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         gimmecert.commands.init(io.StringIO(), io.StringIO(), tmpdir.strpath, tmpdir.basename, 3, ("rsa", 2048))
 
-    with freeze_time('2018-02-01 00:15:00'):
+    with travel(datetime.datetime(2018, 2, 1, 0, 15, 0), tick=False):
         gimmecert.commands.server(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myserver1', None, None, ("rsa", 1024))
 
-    with freeze_time('2018-03-01 00:15:00'):
+    with travel(datetime.datetime(2018, 3, 1, 0, 15, 0), tick=False):
         gimmecert.commands.server(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myserver2', ['myservice1.example.com', 'myservice2.example.com'], None, None)
 
-    with freeze_time('2018-04-01 00:15:00'):
+    with travel(datetime.datetime(2018, 4, 1, 0, 15, 0), tick=False):
         gimmecert.commands.server(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myserver3', None, myserver3_csr_file.strpath, None)
 
-    with freeze_time('2018-05-01 00:15:00'):
+    with travel(datetime.datetime(2018, 5, 1, 0, 15, 0), tick=False):
         gimmecert.commands.server(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myserver4', None, None, ("ecdsa", ec.SECP256R1))
 
-    with freeze_time('2018-06-01 00:15:00'):
+    with travel(datetime.datetime(2018, 6, 1, 0, 15, 0), tick=False):
         status_code = gimmecert.commands.status(stdout_stream, stderr_stream, tmpdir.strpath)
 
     stdout = stdout_stream.getvalue()
@@ -786,22 +787,22 @@ def test_status_reports_client_certificate_information(tmpdir):
     myclient3_csr = gimmecert.crypto.generate_csr('blah', myclient3_private_key)
     gimmecert.storage.write_csr(myclient3_csr, myclient3_csr_file.strpath)
 
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         gimmecert.commands.init(io.StringIO(), io.StringIO(), tmpdir.strpath, tmpdir.basename, 3, ("rsa", 2048))
 
-    with freeze_time('2018-02-01 00:15:00'):
+    with travel(datetime.datetime(2018, 2, 1, 0, 15, 0), tick=False):
         gimmecert.commands.client(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myclient1', None, ("rsa", 1024))
 
-    with freeze_time('2018-03-01 00:15:00'):
+    with travel(datetime.datetime(2018, 3, 1, 0, 15, 0), tick=False):
         gimmecert.commands.client(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myclient2', None, None)
 
-    with freeze_time('2018-04-01 00:15:00'):
+    with travel(datetime.datetime(2018, 4, 1, 0, 15, 0), tick=False):
         gimmecert.commands.client(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myclient3', myclient3_csr_file.strpath, None)
 
-    with freeze_time('2018-05-01 00:15:00'):
+    with travel(datetime.datetime(2018, 5, 1, 0, 15, 0), tick=False):
         gimmecert.commands.client(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myclient4', None, ("ecdsa", ec.SECP384R1))
 
-    with freeze_time('2018-06-01 00:15:00'):
+    with travel(datetime.datetime(2018, 6, 1, 0, 15, 0), tick=False):
         status_code = gimmecert.commands.status(stdout_stream, stderr_stream, tmpdir.strpath)
 
     stdout = stdout_stream.getvalue()
@@ -864,7 +865,7 @@ def test_status_reports_no_server_certificates_were_issued(tmpdir):
     stderr_stream = io.StringIO()
 
     # Just create some sample data, but no server certificates.
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         gimmecert.commands.init(io.StringIO(), io.StringIO(), tmpdir.strpath, tmpdir.basename, 1, ("rsa", 2048))
         gimmecert.commands.client(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myclient1', None, None)
         gimmecert.commands.client(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myclient2', None, None)
@@ -885,7 +886,7 @@ def test_status_reports_no_client_certificates_were_issued(tmpdir):
     stderr_stream = io.StringIO()
 
     # Just create some sample data, but no client certificates.
-    with freeze_time('2018-01-01 00:15:00'):
+    with travel(datetime.datetime(2018, 1, 1, 0, 15, 0), tick=False):
         gimmecert.commands.init(io.StringIO(), io.StringIO(), tmpdir.strpath, tmpdir.basename, 1, ("rsa", 2048))
         gimmecert.commands.server(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myserver1', None, None, None)
         gimmecert.commands.server(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myserver2', None, None, None)
@@ -924,13 +925,13 @@ def test_certificate_marked_as_not_valid_or_expired_as_appropriate(tmpdir, subje
     stderr_stream = io.StringIO()
 
     # Perform action on our fixed issuance date.
-    with freeze_time(issuance_date):
+    with travel(issuance_date, tick=False):
         gimmecert.commands.init(io.StringIO(), io.StringIO(), tmpdir.strpath, "My Project", 1, ("rsa", 2048))
         gimmecert.commands.server(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myserver', None, None, None)
         gimmecert.commands.client(io.StringIO(), io.StringIO(), tmpdir.strpath, 'myclient', None, None)
 
     # Move to specific date in future/past for different validity checks.
-    with freeze_time(status_date):
+    with travel(status_date, tick=False):
         status_code = gimmecert.commands.status(stdout_stream, stderr_stream, tmpdir.strpath)
 
     stdout = stdout_stream.getvalue()

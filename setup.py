@@ -40,7 +40,7 @@ test_lint_requirements = [
 ]
 
 test_requirements = [
-    'freezegun>=1.3,<1.4',
+    'time-machine>=2.13,<2.14',
     'pytest>=8.0,<8.1',
     'pytest-cov>=4.1,<4.2',
     'tox>=4.13,<4.14',
