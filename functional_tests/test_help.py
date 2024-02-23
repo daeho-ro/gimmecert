@@ -18,6 +18,7 @@
 # Gimmecert.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import sys
 
 from .base import run_command
 
@@ -70,12 +71,17 @@ def test_extended_help_shown():
     assert "gimmecert init" in stdout_h_flag
     assert "gimmecert server myserver" in stdout_h_flag
     assert "gimmecert server myserver extradns1.local extradns2.example.com" in stdout_h_flag
-    assert "optional arguments" in stdout_h_flag
+
+    # Help output for optional arguments (header) got changed in
+    # Python 3.10. See https://bugs.python.org/issue9694 for details.
+    if sys.version_info.major == 3 and sys.version_info.minor < 10:
+        assert "optional arguments:" in stdout_h_flag
+    else:
+        assert "options:" in stdout_h_flag
+
     # Subcommands listed.
     assert "help" in stdout_h_flag
-    # @TODO: Can't really test this without producing errors, but
-    # possibly not needed.
-    # assert "positional arguments" in stdout_h_flag
+    assert "positional arguments:" in stdout_h_flag
 
     # John also notices the help command in the list. He tries that
     # one out as well.
