@@ -566,42 +566,42 @@ def test_usage_command_invoked_with_correct_parameters(mock_usage, tmpdir):
     assert mock_usage.call_count == 1
 
 
-@mock.patch('sys.argv', ['gimmecert', 'testcommand'])
+@mock.patch('sys.argv', ['gimmecert', 'successcommand'])
 def test_main_does_not_exit_if_it_calls_function_that_returns_success(tmpdir):
     # This should ensure we don't accidentally create artifacts
     # outside of test directory.
     tmpdir.chdir()
 
     @gimmecert.decorators.subcommand_parser
-    def setup_testcommand_parser(parser, subparsers):
-        subparser = subparsers.add_parser('testcommand', description='test command')
+    def setup_successcommand_parser(parser, subparsers):
+        subparser = subparsers.add_parser('successcommand', description='success command')
 
-        def testcommand_wrapper(args):
+        def successcommand_wrapper(args):
 
             return gimmecert.commands.ExitCode.SUCCESS
 
-        subparser.set_defaults(func=testcommand_wrapper)
+        subparser.set_defaults(func=successcommand_wrapper)
 
         return subparser
 
     gimmecert.cli.main()  # Should not raise
 
 
-@mock.patch('sys.argv', ['gimmecert', 'testcommand'])
+@mock.patch('sys.argv', ['gimmecert', 'failurecommand'])
 def test_main_exits_if_it_calls_function_that_returns_failure(tmpdir):
     # This should ensure we don't accidentally create artifacts
     # outside of test directory.
     tmpdir.chdir()
 
     @gimmecert.decorators.subcommand_parser
-    def setup_testcommand_parser(parser, subparsers):
-        subparser = subparsers.add_parser('testcommand', description='test command')
+    def setup_failurecommand_parser(parser, subparsers):
+        subparser = subparsers.add_parser('failurecommand', description='failure command')
 
-        def testcommand_wrapper(args):
+        def failurecommand_wrapper(args):
 
             return gimmecert.commands.ExitCode.ERROR_ALREADY_INITIALISED
 
-        subparser.set_defaults(func=testcommand_wrapper)
+        subparser.set_defaults(func=failurecommand_wrapper)
 
         return subparser
 
