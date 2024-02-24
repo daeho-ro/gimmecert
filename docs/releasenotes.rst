@@ -12,8 +12,8 @@ Release notes
 =============
 
 
-NEXT RELEASE
-------------
+1.0.0
+-----
 
 This release adds support for Python 3.10, 3.11, and 3.12, while
 dropping support for Python 3.5, 3.6, and 3.7. Package dependencies
