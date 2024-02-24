@@ -381,7 +381,7 @@ if [[ $operation == "prepare" ]]; then
 
     # Initial test run prior to making changes.
     info "Running tests on current branch."
-    if ! tox --recreate ; then
+    if ! tox run --recreate --skip-missing-interpreters false; then
         error "Failed tests detected on current branch ($current_branch). Aborting the process."
         exit "$ERROR_TESTS_FAILED"
     fi
@@ -418,7 +418,7 @@ if [[ $operation == "prepare" ]]; then
 
     # Rerun tests to ensure everything still works as expected.
     info "Running tests with new versioning information in place."
-    if ! tox --recreate ; then
+    if ! tox run --recreate --skip-missing-interpreters false; then
         error "Failed tests detected after updating versioning information. Aborting the process."
         cleanup_reset=1
         cleanup_tag=1
